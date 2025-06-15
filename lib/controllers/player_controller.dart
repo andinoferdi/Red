@@ -831,6 +831,39 @@ class PlayerController extends StateNotifier<PlayerState> {
       currentSong: newCurrentSong,
     );
   }
+  
+  /// Load all songs from database and shuffle them (for previous/next when no playlist context)
+  Future<void> loadAllSongsAndShuffle() async {
+    if (_isDisposed) return;
+    
+    try {
+      final songRepository = GetIt.instance<SongRepository>();
+      final allSongs = await songRepository.getAllSongs();
+      
+      if (allSongs.isEmpty) return;
+      
+      // Shuffle all songs
+      final List<Song> shuffledSongs = List.from(allSongs)..shuffle();
+      
+      // Keep current song as first if it exists in the list
+      final currentSong = state.currentSong;
+      if (currentSong != null) {
+        shuffledSongs.remove(currentSong);
+        shuffledSongs.insert(0, currentSong);
+      }
+      
+      // Update state with shuffled queue and clear playlist context
+      state = state.copyWith(
+        queue: shuffledSongs,
+        currentIndex: 0,
+        currentPlaylistId: null, // Clear playlist context for general shuffle
+        shuffleMode: true, // Enable shuffle mode
+      );
+      
+    } catch (e) {
+      debugPrint('Error loading and shuffling all songs: $e');
+    }
+  }
 }
 
 

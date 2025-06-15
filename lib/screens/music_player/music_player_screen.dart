@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../controllers/player_controller.dart';
@@ -319,15 +320,24 @@ class _MusicPlayerScreenState extends ConsumerState<MusicPlayerScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            // Always show shuffle button - supports both playlist and general shuffle
-                            IconButton(
-                              icon: Icon(
-                                Icons.shuffle,
-                                color: Colors.white,
-                                size: 24,
-                              ),
-                              onPressed: () {
-                                ref.read(playerControllerProvider.notifier).toggleShuffle();
+                            // Shuffle button - disabled when not playing from playlist
+                            Consumer(
+                              builder: (context, ref, child) {
+                                final playerState = ref.watch(playerControllerProvider);
+                                final isPlayingFromPlaylist = playerState.currentPlaylistId != null;
+                                
+                                return IconButton(
+                                  icon: Icon(
+                                    Icons.shuffle,
+                                    color: isPlayingFromPlaylist 
+                                        ? (playerState.shuffleMode ? AppColors.primary : Colors.white)
+                                        : Colors.grey,
+                                    size: 24,
+                                  ),
+                                  onPressed: isPlayingFromPlaylist ? () {
+                                    ref.read(playerControllerProvider.notifier).toggleShuffle();
+                                  } : null,
+                                );
                               },
                             ),
                             IconButton(
@@ -338,9 +348,24 @@ class _MusicPlayerScreenState extends ConsumerState<MusicPlayerScreen> {
                               ),
                               onPressed: () async {
                                 try {
-                                  await ref.read(playerControllerProvider.notifier).skipPrevious();
+                                  final playerState = ref.read(playerControllerProvider);
+                                  
+                                  // If not playing from playlist (individual song or empty queue), load all songs first
+                                  if (playerState.currentPlaylistId == null) {
+                                    await ref.read(playerControllerProvider.notifier).loadAllSongsAndShuffle();
+                                    // After loading, the current song should be at index 0, so skip to last song
+                                    final newPlayerState = ref.read(playerControllerProvider);
+                                    if (newPlayerState.queue.isNotEmpty) {
+                                      final lastIndex = newPlayerState.queue.length - 1;
+                                      final lastSong = newPlayerState.queue[lastIndex];
+                                      ref.read(playerControllerProvider.notifier).updateQueue(newPlayerState.queue, lastIndex);
+                                      await ref.read(playerControllerProvider.notifier).playSong(lastSong);
+                                    }
+                                  } else {
+                                    await ref.read(playerControllerProvider.notifier).skipPrevious();
+                                  }
                                 } catch (e) {
-                              
+                                  debugPrint('Error in skip previous: $e');
                                 }
                               },
                             ),
@@ -381,9 +406,23 @@ class _MusicPlayerScreenState extends ConsumerState<MusicPlayerScreen> {
                               ),
                               onPressed: () async {
                                 try {
-                                  await ref.read(playerControllerProvider.notifier).skipNext();
+                                  final playerState = ref.read(playerControllerProvider);
+                                  
+                                  // If not playing from playlist (individual song or empty queue), load all songs first
+                                  if (playerState.currentPlaylistId == null) {
+                                    await ref.read(playerControllerProvider.notifier).loadAllSongsAndShuffle();
+                                    // After loading, the current song should be at index 0, so skip to next song (index 1)
+                                    final newPlayerState = ref.read(playerControllerProvider);
+                                    if (newPlayerState.queue.length > 1) {
+                                      final nextSong = newPlayerState.queue[1];
+                                      ref.read(playerControllerProvider.notifier).updateQueue(newPlayerState.queue, 1);
+                                      await ref.read(playerControllerProvider.notifier).playSong(nextSong);
+                                    }
+                                  } else {
+                                    await ref.read(playerControllerProvider.notifier).skipNext();
+                                  }
                                 } catch (e) {
-                              
+                                  debugPrint('Error in skip next: $e');
                                 }
                               },
                             ),
