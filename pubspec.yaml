@@ -1,0 +1,61 @@
+name: redrhythm
+description: "A new Flutter project."
+publish_to: "none"
+version: 1.0.0+1
+environment:
+  sdk: ^3.6.0
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.1
+  pocketbase: ^0.18.1
+  flutter_secure_storage: ^9.0.0
+  flutter_riverpod: ^2.4.9
+  riverpod_annotation: ^2.3.3
+  http: ^1.4.0
+  get_it: ^7.6.7
+  palette_generator: ^0.3.3+3
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.8.1
+  path_provider: ^2.1.2
+  auto_route: ^7.9.0
+  just_audio: ^0.9.36
+  image_picker: ^1.0.4
+  shared_preferences: ^2.2.2
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+  build_runner: ^2.4.8
+  riverpod_generator: ^2.3.9
+  freezed: ^2.4.7
+  json_serializable: ^6.7.1
+  auto_route_generator: ^7.3.2
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/wave_icon.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/images/wave_icon.png"
+  web:
+    generate: true
+    image_path: "assets/images/wave_icon.png"
+  windows:
+    generate: true
+    image_path: "assets/images/wave_icon.png"
+  macos:
+    generate: true
+    image_path: "assets/images/wave_icon.png"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/images/playlists/
+    - assets/images/profile/
