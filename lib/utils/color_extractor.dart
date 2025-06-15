@@ -615,3 +615,4 @@ class DominantColors {
       textSecondary.hashCode ^
       accent.hashCode;
 } 
+

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketbase/pocketbase.dart';
 
@@ -257,10 +256,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
                   child: const Text(
                     'Home',
                     style: TextStyle(
+                      fontFamily: 'DM Sans',
                       color: Colors.white,
                       fontSize: 25, // Match size with other screens
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w700,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -786,3 +785,5 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
     );
   }
 }
+
+

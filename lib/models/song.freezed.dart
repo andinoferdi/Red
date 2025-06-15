@@ -375,3 +375,5 @@ abstract class _Song implements Song {
   _$$SongImplCopyWith<_$SongImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+

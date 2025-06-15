@@ -70,3 +70,5 @@ class AppConstants {
   static const double extraLargeFontSize = 24.0;
   static const double titleFontSize = 32.0;
 }
+
+

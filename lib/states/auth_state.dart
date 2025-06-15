@@ -45,3 +45,5 @@ class AuthState with _$AuthState {
         isLoading: false,
       );
 }
+
+

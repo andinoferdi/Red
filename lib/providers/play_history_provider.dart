@@ -171,3 +171,4 @@ final recentlyPlayedLimitedProvider = Provider.family<List<Song>, int>((ref, lim
   final playHistoryController = ref.watch(playHistoryProvider.notifier);
   return playHistoryController.getRecentlyPlayed(limit: limit);
 }); 
+

@@ -51,7 +51,7 @@ class OnboardingScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   text: const TextSpan(
                     style: TextStyle(
-                      fontFamily: 'Poppins',
+                      fontFamily: 'DM Sans',
                       fontSize: 24,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -78,7 +78,7 @@ class OnboardingScreen extends StatelessWidget {
                 const Text(
                   'now!',
                   style: TextStyle(
-                    fontFamily: 'Poppins',
+                    fontFamily: 'DM Sans',
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -101,7 +101,7 @@ class OnboardingScreen extends StatelessWidget {
                     child: const Text(
                       'Get Started',
                       style: TextStyle(
-                        fontFamily: 'Poppins',
+                        fontFamily: 'DM Sans',
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
@@ -117,3 +117,5 @@ class OnboardingScreen extends StatelessWidget {
     );
   }
 }
+
+

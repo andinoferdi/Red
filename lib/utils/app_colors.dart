@@ -66,3 +66,5 @@ class AppColors {
   static const Color progressActive = Colors.white;
   static const Color progressInactive = Color(0xFF424242);
 }
+
+

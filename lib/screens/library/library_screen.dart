@@ -169,7 +169,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                         color: Colors.white,
                         fontSize: 25, // Match size with other screens
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'Poppins',
+                        fontFamily: 'DM Sans',
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -295,7 +295,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
-                                fontFamily: 'Poppins',
+                                fontFamily: 'DM Sans',
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -319,7 +319,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
-                                  fontFamily: 'Poppins',
+                                  fontFamily: 'DM Sans',
                                   fontWeight: FontWeight.w400,
                                 ),
                                 cursorColor:
@@ -329,7 +329,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                   hintStyle: TextStyle(
                                     color: Colors.grey[500],
                                     fontSize: 16,
-                                    fontFamily: 'Poppins',
+                                    fontFamily: 'DM Sans',
                                     fontWeight: FontWeight.w400,
                                   ),
                                   border: InputBorder.none,
@@ -377,7 +377,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                           : Colors.grey[300],
                                       fontSize: 13,
                                       fontWeight: FontWeight.w700,
-                                      fontFamily: 'Poppins',
+                                      fontFamily: 'DM Sans',
                                       letterSpacing: 1.2,
                                     ),
                                   ),
@@ -509,7 +509,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                                           style: TextStyle(
                                             fontSize: 13,
                                             fontWeight: FontWeight.w700,
-                                            fontFamily: 'Poppins',
+                                            fontFamily: 'DM Sans',
                                             letterSpacing: 1.2,
                                             color: Colors.white,
                                           ),
@@ -531,3 +531,5 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
     );
   }
 }
+
+

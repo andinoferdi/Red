@@ -151,3 +151,4 @@ final songSearchProvider = Provider.family<List<Song>, String>((ref, query) {
   final songController = ref.watch(songProvider.notifier);
   return songController.searchSongs(query);
 }); 
+

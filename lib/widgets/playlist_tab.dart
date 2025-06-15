@@ -204,7 +204,7 @@ class _PlaylistTabState extends ConsumerState<PlaylistTab> {
                   color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  fontFamily: 'Poppins',
+                  fontFamily: 'DM Sans',
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -216,7 +216,7 @@ class _PlaylistTabState extends ConsumerState<PlaylistTab> {
                 style: TextStyle(
                   color: Colors.grey[300],
                   fontSize: 16,
-                  fontFamily: 'Poppins',
+                  fontFamily: 'DM Sans',
                   fontWeight: FontWeight.w400,
                 ),
                 textAlign: TextAlign.center,
@@ -244,7 +244,7 @@ class _PlaylistTabState extends ConsumerState<PlaylistTab> {
                         color: Colors.white, // Spotify green
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
-                        fontFamily: 'Poppins',
+                        fontFamily: 'DM Sans',
                         letterSpacing: 1.2,
                       ),
                     ),
@@ -271,7 +271,7 @@ class _PlaylistTabState extends ConsumerState<PlaylistTab> {
                         color: Colors.red,
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
-                        fontFamily: 'Poppins',
+                        fontFamily: 'DM Sans',
                         letterSpacing: 1.2,
                       ),
                     ),
@@ -477,3 +477,5 @@ class _PlaylistTabState extends ConsumerState<PlaylistTab> {
 
 
 }
+
+

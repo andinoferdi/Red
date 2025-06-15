@@ -52,3 +52,5 @@ class IconInfo {
     required this.url,
   });
 }
+
+

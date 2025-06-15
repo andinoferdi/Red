@@ -157,3 +157,5 @@ class Song with _$Song {
 extension DurationExt on Song {
   Duration get duration => Duration(seconds: durationInSeconds);
 }
+
+

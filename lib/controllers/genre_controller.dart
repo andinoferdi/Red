@@ -106,3 +106,5 @@ final genreControllerProvider = StateNotifierProvider<GenreController, GenreStat
   final repository = ref.watch(genreRepositoryProvider);
   return GenreController(repository);
 });
+
+

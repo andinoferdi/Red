@@ -357,7 +357,7 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
                                 )
                               : Icon(
                                   displayState ? Icons.check_circle : Icons.add_circle_outline,
-                                  color: Colors.white,
+                                  color: displayState ? Colors.red : Colors.white,
                                 ),
                             tooltip: _isLoadingPlaylists 
                               ? 'Checking playlists...'
@@ -390,3 +390,5 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
     );
   }
 }
+
+

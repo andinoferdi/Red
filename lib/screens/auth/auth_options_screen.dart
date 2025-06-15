@@ -112,7 +112,7 @@ class AuthOptionsScreen extends StatelessWidget {
                       'Let\'s get you in',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontFamily: 'Poppins',
+                        fontFamily: 'DM Sans',
                         fontSize: 36,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
@@ -127,7 +127,7 @@ class AuthOptionsScreen extends StatelessWidget {
                       'Welcome back to your music world',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontFamily: 'Poppins',
+                        fontFamily: 'DM Sans',
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
                         color: Colors.grey[400],
@@ -174,7 +174,7 @@ class AuthOptionsScreen extends StatelessWidget {
                             const Text(
                               'Log in with password',
                               style: TextStyle(
-                                fontFamily: 'Poppins',
+                                fontFamily: 'DM Sans',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
@@ -201,7 +201,7 @@ class AuthOptionsScreen extends StatelessWidget {
                           child: Text(
                             'or',
                             style: TextStyle(
-                              fontFamily: 'Poppins',
+                              fontFamily: 'DM Sans',
                               fontSize: 14,
                               color: Colors.grey[500],
                             ),
@@ -247,7 +247,7 @@ class AuthOptionsScreen extends StatelessWidget {
                             const Text(
                               'Create new account',
                               style: TextStyle(
-                                fontFamily: 'Poppins',
+                                fontFamily: 'DM Sans',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
                                 color: AppColors.primary,
@@ -265,7 +265,7 @@ class AuthOptionsScreen extends StatelessWidget {
                       'By continuing, you agree to our Terms of Service\nand Privacy Policy',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontFamily: 'Poppins',
+                        fontFamily: 'DM Sans',
                         fontSize: 12,
                         color: Colors.grey[600],
                         height: 1.5,
@@ -284,3 +284,5 @@ class AuthOptionsScreen extends StatelessWidget {
     );
   }
 }
+
+

@@ -27,7 +27,7 @@ class _StatsScreenState extends State<StatsScreen> {
         title: const Text(
           'Your Listening Stats',
           style: TextStyle(
-            fontFamily: 'Poppins',
+            fontFamily: 'DM Sans',
             fontSize: 20,
             fontWeight: FontWeight.w600,
             color: AppColors.text,
@@ -261,3 +261,5 @@ class _StatsScreenState extends State<StatsScreen> {
     );
   }
 }
+
+

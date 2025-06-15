@@ -308,3 +308,4 @@ class DynamicColorState {
       hasError.hashCode ^
       currentSongId.hashCode;
 } 
+

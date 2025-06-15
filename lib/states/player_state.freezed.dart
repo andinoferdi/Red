@@ -377,3 +377,5 @@ abstract class _PlayerState implements PlayerState {
   _$$PlayerStateImplCopyWith<_$PlayerStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+

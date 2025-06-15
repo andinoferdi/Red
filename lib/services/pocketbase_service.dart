@@ -300,3 +300,5 @@ class PocketBaseService {
 
 // Global instance for convenience
 final pocketbaseService = PocketBaseService();
+
+

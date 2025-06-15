@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
@@ -118,3 +117,5 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     );
   }
 }
+
+

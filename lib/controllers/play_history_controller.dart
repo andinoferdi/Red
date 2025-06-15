@@ -139,3 +139,5 @@ final playHistoryControllerProvider =
 final recentlyPlayedProvider = Provider<List<PlayHistory>>((ref) {
   return ref.watch(playHistoryControllerProvider).recentlyPlayed;
 });
+
+

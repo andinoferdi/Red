@@ -66,7 +66,7 @@ class AuthTextField extends StatelessWidget {
           hintText: hint,
           hintStyle: const TextStyle(
             color: Color.fromRGBO(255, 255, 255, 0.6),
-            fontFamily: 'Poppins',
+            fontFamily: 'DM Sans',
           ),
           prefixIcon: Icon(
             icon,
@@ -102,7 +102,7 @@ class AuthTextField extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           errorStyle: const TextStyle(
             color: Colors.red,
-            fontFamily: 'Poppins',
+            fontFamily: 'DM Sans',
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),
@@ -111,3 +111,4 @@ class AuthTextField extends StatelessWidget {
     );
   }
 } 
+

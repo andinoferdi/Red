@@ -57,3 +57,5 @@ class FadeScalePageTransitionsBuilder extends PageTransitionsBuilder {
     );
   }
 }
+
+

@@ -97,7 +97,7 @@ class _LoadingButtonState extends State<LoadingButton>
             : Text(
                 widget.text,
                 style: TextStyle(
-                  fontFamily: 'Poppins',
+                  fontFamily: 'DM Sans',
                   fontSize: widget.fontSize,
                   fontWeight: widget.fontWeight,
                   color: widget.textColor ?? Colors.white,
@@ -129,3 +129,5 @@ class _LoadingButtonState extends State<LoadingButton>
     );
   }
 }
+
+

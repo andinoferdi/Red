@@ -29,3 +29,5 @@ Future<void> setupServiceLocator() async {
   // Controllers are now managed by Riverpod, not GetIt
   // AuthController and PlayerController use Riverpod providers
 }
+
+

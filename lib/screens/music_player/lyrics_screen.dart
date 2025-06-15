@@ -135,7 +135,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                                       color: colors.textPrimary,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: 'Poppins',
+                                      fontFamily: 'DM Sans',
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -146,7 +146,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                                     style: TextStyle(
                                       color: colors.textSecondary,
                                       fontSize: 14,
-                                      fontFamily: 'Poppins',
+                                      fontFamily: 'DM Sans',
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -205,7 +205,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                 color: colors.accent,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Poppins',
+                fontFamily: 'DM Sans',
               ),
             ),
             const Spacer(),
@@ -264,7 +264,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                     fontSize: isSpecialSection ? 18 : 20,
                     fontWeight: FontWeight.bold,
                     height: 1.6,
-                    fontFamily: 'Poppins',
+                    fontFamily: 'DM Sans',
                     shadows: [
                       Shadow(
                         color: Colors.black.withValues(alpha: 0.3),
@@ -295,7 +295,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                 color: AppColors.greyLight,
                 fontSize: 12,
                 fontStyle: FontStyle.italic,
-                fontFamily: 'Poppins',
+                fontFamily: 'DM Sans',
               ),
               textAlign: TextAlign.center,
             ),
@@ -340,7 +340,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
               color: colors.textPrimary,
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              fontFamily: 'Poppins',
+              fontFamily: 'DM Sans',
             ),
           ),
           
@@ -351,7 +351,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
             style: TextStyle(
               color: colors.textSecondary,
               fontSize: 16,
-              fontFamily: 'Poppins',
+              fontFamily: 'DM Sans',
             ),
             textAlign: TextAlign.center,
           ),
@@ -363,7 +363,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
             style: TextStyle(
               color: colors.textSecondary,
               fontSize: 14,
-              fontFamily: 'Poppins',
+              fontFamily: 'DM Sans',
             ),
             textAlign: TextAlign.center,
           ),
@@ -386,7 +386,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
               'Suggest Lyrics',
               style: TextStyle(
                 color: Colors.white,
-                fontFamily: 'Poppins',
+                fontFamily: 'DM Sans',
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -405,3 +405,4 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
     );
   }
 } 
+

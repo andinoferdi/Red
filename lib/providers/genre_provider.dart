@@ -171,3 +171,4 @@ final genreNamesProvider = Provider<List<String>>((ref) {
   final genreController = ref.watch(genreProvider.notifier);
   return genreController.getGenreNames();
 }); 
+

@@ -161,7 +161,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: Text(
                     'Login to your account',
                     style: TextStyle(
-                      fontFamily: 'Poppins',
+                      fontFamily: 'DM Sans',
                       fontSize: 24,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -228,7 +228,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child:                     const Text(
                       'Stay logged in',
                       style: TextStyle(
-                        fontFamily: 'Poppins',
+                        fontFamily: 'DM Sans',
                         fontSize: 16,
                         color: Colors.white,
                       ),
@@ -256,7 +256,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: Text(
                         'OR',
                         style: TextStyle(
-                          fontFamily: 'Poppins',
+                          fontFamily: 'DM Sans',
                           fontSize: 14,
                           color: Color.fromRGBO(255, 255, 255, 0.8),
                         ),
@@ -294,7 +294,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         const Text(
                           'Continue with Google',
                           style: TextStyle(
-                            fontFamily: 'Poppins',
+                            fontFamily: 'DM Sans',
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                             color: Colors.black,
@@ -313,7 +313,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: const Text(
                       'Forgot the password?',
                       style: TextStyle(
-                        fontFamily: 'Poppins',
+                        fontFamily: 'DM Sans',
                         fontSize: 16,
                         color: AppColors.primary,
                       ),
@@ -327,7 +327,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     const Text(
                       'Don\'t have an account? ',
                       style: TextStyle(
-                        fontFamily: 'Poppins',
+                        fontFamily: 'DM Sans',
                         fontSize: 16,
                         color: Colors.white,
                       ),
@@ -339,7 +339,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: const Text(
                         'Sign Up',
                         style: TextStyle(
-                          fontFamily: 'Poppins',
+                          fontFamily: 'DM Sans',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary,
@@ -372,7 +372,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       controller: controller,
       style: const TextStyle(
         color: Colors.white,
-        fontFamily: 'Poppins',
+        fontFamily: 'DM Sans',
         fontSize: 16,
       ),
       keyboardType: keyboardType,
@@ -397,7 +397,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         hintText: hint,
         hintStyle: TextStyle(
           color: Colors.white.withValues(alpha: 0.6),
-          fontFamily: 'Poppins',
+          fontFamily: 'DM Sans',
           fontSize: 16,
         ),
         prefixIcon: Icon(
@@ -463,7 +463,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
         errorStyle: const TextStyle(
           color: Colors.red,
-          fontFamily: 'Poppins',
+          fontFamily: 'DM Sans',
           fontSize: 12,
           fontWeight: FontWeight.w500,
         ),
@@ -471,3 +471,5 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 }
+
+

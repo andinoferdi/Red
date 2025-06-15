@@ -31,3 +31,5 @@ class PlayerState with _$PlayerState {
   /// Initial state
   factory PlayerState.initial() => const PlayerState();
 }
+
+
