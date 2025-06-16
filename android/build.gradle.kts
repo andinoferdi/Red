@@ -5,6 +5,16 @@ allprojects {
     }
 }
 
+// Suppress Java 8 obsolete warnings globally
+subprojects {
+    tasks.withType<JavaCompile>().configureEach {
+        options.compilerArgs.addAll(listOf(
+            "-Xlint:-options",
+            "-Xlint:-deprecation"
+        ))
+    }
+}
+
 val newBuildDir: Directory = rootProject.layout.buildDirectory.dir("../../build").get()
 rootProject.layout.buildDirectory.value(newBuildDir)
 

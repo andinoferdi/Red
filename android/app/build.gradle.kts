@@ -18,6 +18,14 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
+    
+    // Suppress Java 8 obsolete warnings
+    tasks.withType<JavaCompile>().configureEach {
+        options.compilerArgs.addAll(listOf(
+            "-Xlint:-options",
+            "-Xlint:-deprecation"
+        ))
+    }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).

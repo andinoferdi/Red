@@ -814,37 +814,42 @@ class _MusicPlayerScreenState extends ConsumerState<MusicPlayerScreen> {
           ),
           child: Stack(
             children: [
-              // Artist image filling entire container
+              // Artist image filling container without cropping
               ClipRRect(
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(16),
                 ),
-                child: ImageHelpers.buildSafeNetworkImage(
-                  imageUrl: artist.imageUrl,
+                child: Container(
                   width: double.infinity,
                   height: 160,
-                  fit: BoxFit.cover,
-                  fallbackWidget: Container(
-                    color: AppColors.greyDark,
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.person,
-                          color: AppColors.primary,
-                          size: 60,
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'No Artist Image',
-                          style: TextStyle(
-                            color: AppColors.greyLight,
-                            fontSize: 14,
-                            fontFamily: 'DM Sans',
+                  color: AppColors.greyDark,
+                  child: ImageHelpers.buildSafeNetworkImage(
+                    imageUrl: artist.imageUrl,
+                    width: double.infinity,
+                    height: 160,
+                    fit: BoxFit.fitWidth, // Fit width untuk mengisi lebar penuh tanpa crop berlebihan
+                    fallbackWidget: Container(
+                      color: AppColors.greyDark,
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.person,
+                            color: AppColors.primary,
+                            size: 60,
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 8),
+                          Text(
+                            'No Artist Image',
+                            style: TextStyle(
+                              color: AppColors.greyLight,
+                              fontSize: 14,
+                              fontFamily: 'DM Sans',
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
