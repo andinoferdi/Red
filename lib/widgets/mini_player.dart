@@ -35,7 +35,7 @@ class MiniPlayer extends ConsumerStatefulWidget {
   ConsumerState<MiniPlayer> createState() => _MiniPlayerState();
 }
 
-class _MiniPlayerState extends ConsumerState<MiniPlayer> {
+class _MiniPlayerState extends ConsumerState<MiniPlayer> with TickerProviderStateMixin {
   bool _isLoadingPlaylists = false;
   bool _isInPlaylist = false;
   String? _lastCheckedSongId; // Cache to avoid unnecessary checks
@@ -49,9 +49,28 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
   bool _optimisticState = false;
   bool _hasOptimisticState = false;
 
+  // Animation controller for fade in effect
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+  bool _hasShownBefore = false;
+
   @override
   void initState() {
     super.initState();
+    
+    // Initialize fade animation controller
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeInOut,
+    ));
     
     // Check playlist status after the widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -61,6 +80,7 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
 
   @override
   void dispose() {
+    _fadeController.dispose();
     super.dispose();
   }
 
@@ -206,8 +226,6 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final playerState = ref.watch(playerControllerProvider);
@@ -229,7 +247,18 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
     
     // Don't show mini player if no song is playing
     if (currentSong == null) {
+      // Reset the fade state when no song is playing
+      _hasShownBefore = false;
+      _fadeController.reset();
       return const SizedBox.shrink();
+    }
+
+    // Trigger fade in animation when mini player first appears
+    if (!_hasShownBefore) {
+      _hasShownBefore = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _fadeController.forward();
+      });
     }
 
     // Auto-extract colors if not already extracted for current song
@@ -239,23 +268,25 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
       });
     }
 
-    return GestureDetector(
-      onTap: () {
-        // Navigate to full player screen when mini player is tapped
-        context.router.push(MusicPlayerRoute(song: currentSong));
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 400),
-        height: 64,
-        decoration: BoxDecoration(
-          color: colors.backgroundStart, // Use album color directly
-          border: Border(
-            top: BorderSide(
-              color: colors.accent,
-              width: 0.5,
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: GestureDetector(
+        onTap: () {
+          // Navigate to full player screen when mini player is tapped
+          context.router.push(MusicPlayerRoute(song: currentSong));
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 400),
+          height: 64,
+          decoration: BoxDecoration(
+            color: colors.backgroundStart, // Use album color directly
+            border: Border(
+              top: BorderSide(
+                color: colors.accent,
+                width: 0.5,
+              ),
             ),
           ),
-        ),
         child: Column(
           children: [
             // Progress Bar
@@ -416,6 +447,7 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
               ),
             ),
           ],
+        ),
         ),
       ),
     );
