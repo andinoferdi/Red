@@ -21,51 +21,50 @@ class DynamicColorNotifier extends StateNotifier<DynamicColorState> {
       return;
     }
     
-    // Set loading state only if no colors are currently available
-    if (state.colors == null) {
-      state = state.copyWith(
-        isLoading: true,
-        currentSongId: song.id,
-      );
-    } else {
-      // Keep current colors while loading new ones for smoother transitions
-      state = state.copyWith(
-        currentSongId: song.id,
-        isLoading: false, // Don't show loading if we have colors
-      );
-    }
+    // Start with neutral colors immediately to avoid any random colors
+    const neutralColors = DominantColors(
+      primary: Color(0xFF4A4A4A),
+      secondary: Color(0xFF606060),
+      backgroundStart: Color(0xFF2A2A2A),
+      backgroundEnd: Color(0xFF1A1A1A),
+      textPrimary: Colors.white,
+      textSecondary: Color(0xFFB3B3B3),
+      accent: Color(0xFF707070),
+    );
     
+    // Set neutral colors immediately
+    state = state.copyWith(
+      colors: neutralColors,
+      currentSongId: song.id,
+      isLoading: false,
+      hasError: false,
+    );
+    
+    // Add a small delay to make transition smoother and less jarring
+    await Future.delayed(const Duration(milliseconds: 300));
+    
+    // Now extract actual album colors in background
     try {
       // Check if we have a valid image URL
       if (song.albumArtUrl.isEmpty || !_isValidImageUrl(song.albumArtUrl)) {
-        // Use intelligent fallback based on song/artist info
-        final fallbackColors = _getIntelligentFallback(song);
-        state = state.copyWith(
-          colors: fallbackColors,
-          isLoading: false,
-          hasError: false,
-        );
+        // No album art, keep neutral colors
         return;
       }
       
       // Extract colors from album art URL
       final colors = await ColorExtractor.extractColorsFromUrl(song.albumArtUrl);
       
-      // Update state with extracted colors
-      state = state.copyWith(
-        colors: colors,
-        isLoading: false,
-        hasError: false,
-      );
+      // Update state with extracted colors only if this is still the current song
+      if (state.currentSongId == song.id) {
+        state = state.copyWith(
+          colors: colors,
+          isLoading: false,
+          hasError: false,
+        );
+      }
     } catch (e) {
-      // Use intelligent fallback instead of just default colors
-      final fallbackColors = _getIntelligentFallback(song);
-      
-      state = state.copyWith(
-        colors: fallbackColors,
-        isLoading: false,
-        hasError: true,
-      );
+      // On error, keep the neutral colors we already set
+      debugPrint('Color extraction failed for ${song.title}: $e');
     }
   }
   
@@ -81,81 +80,9 @@ class DynamicColorNotifier extends StateNotifier<DynamicColorState> {
     }
   }
   
-  /// Get intelligent fallback colors based on song information
-  DominantColors _getIntelligentFallback(Song song) {
-    // Simple hash-based color selection for consistency
-    final songHash = (song.title + song.artist).hashCode;
-    final colorIndex = songHash.abs() % 6;
-    
-    // Map to elegant color palettes
-    const colorKeys = ['purple', 'blue', 'green', 'red', 'orange', 'pink'];
-    final selectedKey = colorKeys[colorIndex];
-    
-    // Get the elegant palette (this is a simplified access - in real implementation,
-    // we'd need to expose the palettes from ColorExtractor)
-    switch (selectedKey) {
-      case 'blue':
-        return const DominantColors(
-          primary: Color(0xFF3B82F6),
-          secondary: Color(0xFF1D4ED8),
-          backgroundStart: Color(0xFF1E3A8A),
-          backgroundEnd: Color(0xFF1A1A1A),
-          textPrimary: Colors.white,
-          textSecondary: Color(0xFFB3B3B3),
-          accent: Color(0xFF2563EB),
-        );
-      case 'green':
-        return const DominantColors(
-          primary: Color(0xFF22C55E),
-          secondary: Color(0xFF16A34A),
-          backgroundStart: Color(0xFF166534),
-          backgroundEnd: Color(0xFF1A1A1A),
-          textPrimary: Colors.white,
-          textSecondary: Color(0xFFB3B3B3),
-          accent: Color(0xFF15803D),
-        );
-      case 'red':
-        return const DominantColors(
-          primary: Color(0xFFEF4444),
-          secondary: Color(0xFFDC2626),
-          backgroundStart: Color(0xFF991B1B),
-          backgroundEnd: Color(0xFF1A1A1A),
-          textPrimary: Colors.white,
-          textSecondary: Color(0xFFB3B3B3),
-          accent: Color(0xFFB91C1C),
-        );
-      case 'orange':
-        return const DominantColors(
-          primary: Color(0xFFF97316),
-          secondary: Color(0xFFEA580C),
-          backgroundStart: Color(0xFF9A3412),
-          backgroundEnd: Color(0xFF1A1A1A),
-          textPrimary: Colors.white,
-          textSecondary: Color(0xFFB3B3B3),
-          accent: Color(0xFFCC5500),
-        );
-      case 'pink':
-        return const DominantColors(
-          primary: Color(0xFFEC4899),
-          secondary: Color(0xFFDB2777),
-          backgroundStart: Color(0xFF9D174D),
-          backgroundEnd: Color(0xFF1A1A1A),
-          textPrimary: Colors.white,
-          textSecondary: Color(0xFFB3B3B3),
-          accent: Color(0xFFBE185D),
-        );
-      default: // purple
-        return const DominantColors(
-          primary: Color(0xFF8B5CF6),
-          secondary: Color(0xFFA855F7),
-          backgroundStart: Color(0xFF2D1B69),
-          backgroundEnd: Color(0xFF1A1A1A),
-          textPrimary: Colors.white,
-          textSecondary: Color(0xFFB3B3B3),
-          accent: Color(0xFF9333EA),
-        );
-    }
-  }
+
+  
+
   
   /// Preload colors for multiple songs (for better UX in playlists)
   Future<void> preloadColorsForSongs(List<Song> songs) async {
@@ -223,22 +150,22 @@ class DynamicColorNotifier extends StateNotifier<DynamicColorState> {
   
   /// Extract colors with debug information
   Future<DominantColors> extractColorsWithDebug(Song song) async {
-    print('\n=== DEBUG COLOR EXTRACTION ===');
-    print('Song: ${song.title}');
-    print('Artist: ${song.artist}');
-    print('Album Art URL: ${song.albumArtUrl}');
+    debugPrint('\n=== DEBUG COLOR EXTRACTION ===');
+    debugPrint('Song: ${song.title}');
+    debugPrint('Artist: ${song.artist}');
+    debugPrint('Album Art URL: ${song.albumArtUrl}');
     
     // Clear cache first to ensure fresh extraction
     ColorExtractor.clearCache();
     
     final colors = await ColorExtractor.extractColorsFromUrl(song.albumArtUrl);
     
-    print('Primary Color: ${colors.primary}');
-    print('Secondary Color: ${colors.secondary}');
-    print('Background Start: ${colors.backgroundStart}');
-    print('Background End: ${colors.backgroundEnd}');
-    print('Accent Color: ${colors.accent}');
-    print('==============================\n');
+    debugPrint('Primary Color: ${colors.primary}');
+    debugPrint('Secondary Color: ${colors.secondary}');
+    debugPrint('Background Start: ${colors.backgroundStart}');
+    debugPrint('Background End: ${colors.backgroundEnd}');
+    debugPrint('Accent Color: ${colors.accent}');
+    debugPrint('==============================\n');
     
     return colors;
   }
@@ -258,17 +185,17 @@ class DynamicColorState {
     this.currentSongId,
   });
   
-  /// Initial state with default colors
+  /// Initial state with default colors (neutral gray instead of purple)
   factory DynamicColorState.initial() {
     return const DynamicColorState(
       colors: DominantColors(
-        primary: Color(0xFF8B5CF6),
-        secondary: Color(0xFFA855F7),
-        backgroundStart: Color(0xFF2D1B69),
+        primary: Color(0xFF4A4A4A),
+        secondary: Color(0xFF606060),
+        backgroundStart: Color(0xFF2A2A2A),
         backgroundEnd: Color(0xFF1A1A1A),
         textPrimary: Colors.white,
         textSecondary: Color(0xFFB3B3B3),
-        accent: Color(0xFF9333EA),
+        accent: Color(0xFF707070),
       ),
       isLoading: false,
       hasError: false,

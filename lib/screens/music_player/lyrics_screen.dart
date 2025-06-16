@@ -64,40 +64,40 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                   // Back button
                   IconButton(
                     icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 28),
-                    onPressed: () => context.router.maybePop(),
-                  ),
+              onPressed: () => context.router.maybePop(),
+            ),
                   
                   // Song title and artist in the center
                   Expanded(
                     child: Column(
-                      children: [
-                        Text(
-                          currentSong.title,
+                                children: [
+                                  Text(
+                                    currentSong.title,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'DM Sans',
-                          ),
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'DM Sans',
+                                    ),
                           textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                         const SizedBox(height: 2),
-                        Text(
-                          currentSong.artist,
-                          style: TextStyle(
+                                  Text(
+                                    currentSong.artist,
+                                    style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.7),
                             fontSize: 11,
-                            fontFamily: 'DM Sans',
-                          ),
+                                      fontFamily: 'DM Sans',
+                                    ),
                           textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
                   
                   // More options button
                   IconButton(
@@ -105,11 +105,11 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                     onPressed: () {
                       // TODO: Implement more options
                     },
-                  ),
+                ),
                 ],
-              ),
             ),
-            
+          ),
+          
             // Lyrics content - takes most of the space with fade effect
             Expanded(
               child: Stack(
@@ -222,9 +222,9 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                           ref.read(playerControllerProvider.notifier).resume();
                         }
                       },
-                    ),
-                  ),
-                ],
+            ),
+          ),
+        ],
               ),
             ),
           ],
@@ -243,24 +243,24 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
     
     return Padding(
       padding: const EdgeInsets.only(top: 20, bottom: 80), // Extra bottom padding for scrolling
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: lyricsLines.map((line) {
-          final trimmedLine = line.trim();
-          
-          // Empty line for spacing
-          if (trimmedLine.isEmpty) {
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: lyricsLines.map((line) {
+              final trimmedLine = line.trim();
+              
+              // Empty line for spacing
+              if (trimmedLine.isEmpty) {
             return const SizedBox(height: 20);
-          }
-          
-          // Check if it's a chorus or special section (contains brackets)
-          final isSpecialSection = trimmedLine.contains('[') && trimmedLine.contains(']');
-          
-          return Padding(
+              }
+              
+              // Check if it's a chorus or special section (contains brackets)
+              final isSpecialSection = trimmedLine.contains('[') && trimmedLine.contains(']');
+              
+              return Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: Text(
-              trimmedLine,
-              style: TextStyle(
+                child: Text(
+                  trimmedLine,
+                  style: TextStyle(
                 color: isSpecialSection 
                     ? Colors.white.withValues(alpha: 0.6)
                     : Colors.white,
@@ -273,7 +273,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
             ),
           );
         }).toList(),
-      ),
+        ),
     );
   }
   
@@ -281,29 +281,29 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 60),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
             Icon(
               Icons.lyrics_outlined,
               size: 80,
               color: Colors.white.withValues(alpha: 0.3),
-            ),
-            
-            const SizedBox(height: 24),
-            
-            Text(
-              'No lyrics available',
-              style: TextStyle(
+          ),
+          
+          const SizedBox(height: 24),
+          
+          Text(
+            'No lyrics available',
+            style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.7),
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
                 fontFamily: 'DM Sans',
               ),
               textAlign: TextAlign.center,
-            ),
+              ),
           ],
-        ),
+          ),
       ),
     );
   }

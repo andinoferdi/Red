@@ -18,7 +18,7 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
-    
+
     // Suppress Java 8 obsolete warnings
     tasks.withType<JavaCompile>().configureEach {
         options.compilerArgs.addAll(listOf(

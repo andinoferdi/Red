@@ -74,20 +74,20 @@ class _AddSongsScreenState extends ConsumerState<AddSongsScreen> {
       final playlistSongs = await songPlaylistRepository.getPlaylistSongs(widget.playlist.id);
       
       if (mounted) {
-        setState(() {
-          _allSongs = songs;
-          _filteredSongs = songs;
-          _existingSongIds.clear();
-          _existingSongIds.addAll(playlistSongs.map((song) => song.id));
-          _isLoading = false;
-        });
+      setState(() {
+        _allSongs = songs;
+        _filteredSongs = songs;
+        _existingSongIds.clear();
+        _existingSongIds.addAll(playlistSongs.map((song) => song.id));
+        _isLoading = false;
+      });
       }
     } catch (e) {
       if (mounted) {
-        setState(() {
-          _errorMessage = 'Gagal memuat lagu: $e';
-          _isLoading = false;
-        });
+      setState(() {
+        _errorMessage = 'Gagal memuat lagu: $e';
+        _isLoading = false;
+      });
       }
     }
   }

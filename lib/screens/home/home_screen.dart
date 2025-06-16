@@ -718,8 +718,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
                         // Use playSongById to load complete song data without playlist context
                         ref.read(playerControllerProvider.notifier).playSongByIdWithoutPlaylist(song.id);
                         
-                        // Auto-extract colors for mini player
-                        ref.read(dynamicColorProvider.notifier).extractColorsFromSong(song);
+                        // Color extraction will be handled automatically by mini_player when song changes
                       },
                     ),
                     if (index < playHistoryState.recentlyPlayed.length - 1)

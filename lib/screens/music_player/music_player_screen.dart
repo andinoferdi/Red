@@ -353,18 +353,18 @@ class _MusicPlayerScreenState extends ConsumerState<MusicPlayerScreen> {
                                 final canGoPrevious = hasQueue && currentIndex > 0;
                                 
                                 return IconButton(
-                                  icon: Icon(
-                                    Icons.skip_previous,
+                              icon: Icon(
+                                Icons.skip_previous,
                                     color: canGoPrevious ? Colors.white : Colors.grey,
-                                    size: 36,
-                                  ),
+                                size: 36,
+                              ),
                                   onPressed: canGoPrevious ? () async {
                                     try {
                                       // Use built-in skip previous logic
-                                      await ref.read(playerControllerProvider.notifier).skipPrevious();
-                                    } catch (e) {
-                                      debugPrint('Error in skip previous: $e');
-                                    }
+                                    await ref.read(playerControllerProvider.notifier).skipPrevious();
+                                } catch (e) {
+                                  debugPrint('Error in skip previous: $e');
+                                }
                                   } : null,
                                 );
                               },
@@ -411,18 +411,18 @@ class _MusicPlayerScreenState extends ConsumerState<MusicPlayerScreen> {
                                 final canGoNext = hasQueue && currentIndex < queueLength - 1;
                                 
                                 return IconButton(
-                                  icon: Icon(
-                                    Icons.skip_next,
+                              icon: Icon(
+                                Icons.skip_next,
                                     color: canGoNext ? Colors.white : Colors.grey,
-                                    size: 36,
-                                  ),
+                                size: 36,
+                              ),
                                   onPressed: canGoNext ? () async {
                                     try {
                                       // Use built-in skip next logic
-                                      await ref.read(playerControllerProvider.notifier).skipNext();
-                                    } catch (e) {
-                                      debugPrint('Error in skip next: $e');
-                                    }
+                                    await ref.read(playerControllerProvider.notifier).skipNext();
+                                } catch (e) {
+                                  debugPrint('Error in skip next: $e');
+                                }
                                   } : null,
                                 );
                               },
@@ -825,31 +825,31 @@ class _MusicPlayerScreenState extends ConsumerState<MusicPlayerScreen> {
                   width: double.infinity,
                   height: 160,
                   color: AppColors.greyDark,
-                  child: ImageHelpers.buildSafeNetworkImage(
-                    imageUrl: artist.imageUrl,
-                    width: double.infinity,
-                    height: 160,
+                child: ImageHelpers.buildSafeNetworkImage(
+                  imageUrl: artist.imageUrl,
+                  width: double.infinity,
+                  height: 160,
                     fit: BoxFit.fitWidth, // Fit width untuk mengisi lebar penuh tanpa crop berlebihan
-                    fallbackWidget: Container(
-                      color: AppColors.greyDark,
-                      child: const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.person,
-                            color: AppColors.primary,
-                            size: 60,
+                  fallbackWidget: Container(
+                    color: AppColors.greyDark,
+                    child: const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.person,
+                          color: AppColors.primary,
+                          size: 60,
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'No Artist Image',
+                          style: TextStyle(
+                            color: AppColors.greyLight,
+                            fontSize: 14,
+                            fontFamily: 'DM Sans',
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            'No Artist Image',
-                            style: TextStyle(
-                              color: AppColors.greyLight,
-                              fontSize: 14,
-                              fontFamily: 'DM Sans',
-                            ),
-                          ),
-                        ],
+                        ),
+                      ],
                       ),
                     ),
                   ),

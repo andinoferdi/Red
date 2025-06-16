@@ -52,10 +52,16 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
   @override
   void initState() {
     super.initState();
+    
     // Check playlist status after the widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkIfSongInPlaylist();
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -194,8 +200,13 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
       // Reduced debug logging for better performance
       _lastCheckedSongId = null; // Reset cache for new song
       _checkIfSongInPlaylist();
+      
+      // Remove the fade transition that makes mini player disappear
+      // Keep only the individual element animations
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -233,13 +244,14 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
         // Navigate to full player screen when mini player is tapped
         context.router.push(MusicPlayerRoute(song: currentSong));
       },
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 400),
         height: 64,
         decoration: BoxDecoration(
           color: colors.backgroundStart, // Use album color directly
           border: Border(
             top: BorderSide(
-                              color: colors.accent,
+              color: colors.accent,
               width: 0.5,
             ),
           ),
@@ -269,51 +281,70 @@ class _MiniPlayerState extends ConsumerState<MiniPlayer> {
                       borderRadius: BorderRadius.circular(4),
                       color: AppColors.greyDark,
                     ),
-                    child: ImageHelpers.buildSafeNetworkImage(
-                      imageUrl: currentSong.albumArtUrl,
-                      width: 48,
-                      height: 48,
-                      fit: BoxFit.cover,
-                      borderRadius: BorderRadius.circular(4),
-                      fallbackWidget: Container(
-                        width: 48,
-                        height: 48,
-                        color: AppColors.greyDark,
-                        child: const Icon(
-                          Icons.music_note,
-                          color: AppColors.primary,
-                          size: 20,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: Container(
+                        key: ValueKey(currentSong.albumArtUrl), // Key for AnimatedSwitcher
+                        child: ImageHelpers.buildSafeNetworkImage(
+                          imageUrl: currentSong.albumArtUrl,
+                          width: 48,
+                          height: 48,
+                          fit: BoxFit.cover,
+                          borderRadius: BorderRadius.circular(4),
+                          fallbackWidget: Container(
+                            width: 48,
+                            height: 48,
+                            color: AppColors.greyDark,
+                            child: const Icon(
+                              Icons.music_note,
+                              color: AppColors.primary,
+                              size: 20,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
                   // Song Info
                   Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          currentSong.title,
-                          style: TextStyle(
-                            color: colors.textPrimary,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
+                        return Stack(
+                          alignment: Alignment.centerLeft, // Force left alignment
+                          children: <Widget>[
+                            ...previousChildren,
+                            if (currentChild != null) currentChild,
+                          ],
+                        );
+                      },
+                      child: Column(
+                        key: ValueKey('${currentSong.id}_${currentSong.title}'), // Key for AnimatedSwitcher
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            currentSong.title,
+                            style: TextStyle(
+                              color: colors.textPrimary,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          currentSong.artist,
-                          style: TextStyle(
-                            color: colors.textSecondary,
-                            fontSize: 12,
+                          const SizedBox(height: 2),
+                          Text(
+                            currentSong.artist,
+                            style: TextStyle(
+                              color: colors.textSecondary,
+                              fontSize: 12,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   // Control Buttons
