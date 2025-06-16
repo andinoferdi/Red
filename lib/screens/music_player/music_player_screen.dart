@@ -340,33 +340,33 @@ class _MusicPlayerScreenState extends ConsumerState<MusicPlayerScreen> {
                                 );
                               },
                             ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.skip_previous,
-                                color: Colors.white,
-                                size: 36,
-                              ),
-                              onPressed: () async {
-                                try {
-                                  final playerState = ref.read(playerControllerProvider);
-                                  
-                                  // If not playing from playlist (individual song or empty queue), load all songs first
-                                  if (playerState.currentPlaylistId == null) {
-                                    await ref.read(playerControllerProvider.notifier).loadAllSongsAndShuffle();
-                                    // After loading, the current song should be at index 0, so skip to last song
-                                    final newPlayerState = ref.read(playerControllerProvider);
-                                    if (newPlayerState.queue.isNotEmpty) {
-                                      final lastIndex = newPlayerState.queue.length - 1;
-                                      final lastSong = newPlayerState.queue[lastIndex];
-                                      ref.read(playerControllerProvider.notifier).updateQueue(newPlayerState.queue, lastIndex);
-                                      await ref.read(playerControllerProvider.notifier).playSong(lastSong);
+                            Consumer(
+                              builder: (context, ref, child) {
+                                final playerState = ref.watch(playerControllerProvider);
+                                final hasQueue = playerState.queue.isNotEmpty;
+                                final currentIndex = playerState.currentIndex;
+                                final queueLength = playerState.queue.length;
+                                
+
+                                
+                                // Previous button should be enabled if we have queue and not at beginning
+                                final canGoPrevious = hasQueue && currentIndex > 0;
+                                
+                                return IconButton(
+                                  icon: Icon(
+                                    Icons.skip_previous,
+                                    color: canGoPrevious ? Colors.white : Colors.grey,
+                                    size: 36,
+                                  ),
+                                  onPressed: canGoPrevious ? () async {
+                                    try {
+                                      // Use built-in skip previous logic
+                                      await ref.read(playerControllerProvider.notifier).skipPrevious();
+                                    } catch (e) {
+                                      debugPrint('Error in skip previous: $e');
                                     }
-                                  } else {
-                                    await ref.read(playerControllerProvider.notifier).skipPrevious();
-                                  }
-                                } catch (e) {
-                                  debugPrint('Error in skip previous: $e');
-                                }
+                                  } : null,
+                                );
                               },
                             ),
                             Container(
@@ -398,32 +398,33 @@ class _MusicPlayerScreenState extends ConsumerState<MusicPlayerScreen> {
                                 },
                               ),
                             ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.skip_next,
-                                color: Colors.white,
-                                size: 36,
-                              ),
-                              onPressed: () async {
-                                try {
-                                  final playerState = ref.read(playerControllerProvider);
-                                  
-                                  // If not playing from playlist (individual song or empty queue), load all songs first
-                                  if (playerState.currentPlaylistId == null) {
-                                    await ref.read(playerControllerProvider.notifier).loadAllSongsAndShuffle();
-                                    // After loading, the current song should be at index 0, so skip to next song (index 1)
-                                    final newPlayerState = ref.read(playerControllerProvider);
-                                    if (newPlayerState.queue.length > 1) {
-                                      final nextSong = newPlayerState.queue[1];
-                                      ref.read(playerControllerProvider.notifier).updateQueue(newPlayerState.queue, 1);
-                                      await ref.read(playerControllerProvider.notifier).playSong(nextSong);
+                            Consumer(
+                              builder: (context, ref, child) {
+                                final playerState = ref.watch(playerControllerProvider);
+                                final hasQueue = playerState.queue.isNotEmpty;
+                                final currentIndex = playerState.currentIndex;
+                                final queueLength = playerState.queue.length;
+                                
+
+                                
+                                // Next button should be enabled if we have queue and not at end
+                                final canGoNext = hasQueue && currentIndex < queueLength - 1;
+                                
+                                return IconButton(
+                                  icon: Icon(
+                                    Icons.skip_next,
+                                    color: canGoNext ? Colors.white : Colors.grey,
+                                    size: 36,
+                                  ),
+                                  onPressed: canGoNext ? () async {
+                                    try {
+                                      // Use built-in skip next logic
+                                      await ref.read(playerControllerProvider.notifier).skipNext();
+                                    } catch (e) {
+                                      debugPrint('Error in skip next: $e');
                                     }
-                                  } else {
-                                    await ref.read(playerControllerProvider.notifier).skipNext();
-                                  }
-                                } catch (e) {
-                                  debugPrint('Error in skip next: $e');
-                                }
+                                  } : null,
+                                );
                               },
                             ),
                             IconButton(

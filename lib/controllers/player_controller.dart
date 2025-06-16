@@ -568,17 +568,21 @@ class PlayerController extends StateNotifier<PlayerState> {
       // Shuffle all songs
       final List<Song> shuffledSongs = List.from(allSongs)..shuffle();
       
-      // Keep current song as first if it exists in the list
+      // For manual shuffle, keep current song at beginning for better UX
       final currentSong = state.currentSong;
+      int currentIndex = 0;
+      
       if (currentSong != null) {
-        shuffledSongs.remove(currentSong);
+        // Remove current song from shuffled list and put it at the beginning
+        shuffledSongs.removeWhere((song) => song.id == currentSong.id);
         shuffledSongs.insert(0, currentSong);
+        currentIndex = 0; // Current song is now at index 0
       }
       
       // Update state with shuffled queue
       state = state.copyWith(
         queue: shuffledSongs,
-        currentIndex: 0,
+        currentIndex: currentIndex,
         currentPlaylistId: null, // Clear playlist context for general shuffle
       );
       
@@ -738,35 +742,37 @@ class PlayerController extends StateNotifier<PlayerState> {
     // OR if explicitly requested
     final shouldForceRestart = forceRestart || isCurrentSong || (isCurrentSong && isDifferentContext);
     
-    // Only reset shuffle mode if not in general shuffle mode
-    // General shuffle should persist when playing individual songs
-    final shouldResetShuffle = state.shuffleMode && state.currentPlaylistId != null;
-    
-    if (shouldResetShuffle) {
-      state = state.copyWith(shuffleMode: false);
-    }
-    
-    // If shuffle is active and no playlist context, keep the shuffled queue
-    // Otherwise, set single song queue
-    if (state.shuffleMode && state.currentPlaylistId == null) {
-      // Keep current shuffled queue, just update current song if needed
-      final songIndex = state.queue.indexWhere((s) => s.id == song.id);
-      if (songIndex != -1) {
+    try {
+      // Load all songs for navigation
+      final songRepository = GetIt.instance<SongRepository>();
+      final allSongs = await songRepository.getAllSongs();
+      
+      if (allSongs.isEmpty) {
+        // Fallback to single song if no songs available
         state = state.copyWith(
-          currentIndex: songIndex,
-          currentPlaylistId: null,
-        );
-      } else {
-        // Song not in current queue, add it and play
-        final newQueue = [song, ...state.queue];
-        state = state.copyWith(
-          queue: newQueue,
+          queue: [song],
           currentIndex: 0,
           currentPlaylistId: null,
         );
+      } else {
+        // Create shuffled queue with selected song at index 0
+        final List<Song> shuffledSongs = List.from(allSongs)..shuffle();
+        
+        // Remove selected song from shuffled list and put it at the beginning
+        shuffledSongs.removeWhere((s) => s.id == song.id);
+        shuffledSongs.insert(0, song);
+        
+        // Update state with full queue
+        state = state.copyWith(
+          queue: shuffledSongs,
+          currentIndex: 0,
+          currentPlaylistId: null, // Clear playlist context
+          shuffleMode: true, // Enable shuffle mode for navigation
+        );
       }
-    } else {
-      // Clear playlist context and set single song queue
+    } catch (e) {
+      debugPrint('Error loading all songs for individual playback: $e');
+      // Fallback to single song
       state = state.copyWith(
         queue: [song],
         currentIndex: 0,
@@ -845,17 +851,21 @@ class PlayerController extends StateNotifier<PlayerState> {
       // Shuffle all songs
       final List<Song> shuffledSongs = List.from(allSongs)..shuffle();
       
-      // Keep current song as first if it exists in the list
+      // For individual song playback, current song should be first in queue
       final currentSong = state.currentSong;
+      int currentIndex = 0;
+      
       if (currentSong != null) {
-        shuffledSongs.remove(currentSong);
+        // Remove current song from shuffled list and put it at the beginning
+        shuffledSongs.removeWhere((song) => song.id == currentSong.id);
         shuffledSongs.insert(0, currentSong);
+        currentIndex = 0; // Current song is now at index 0
       }
       
       // Update state with shuffled queue and clear playlist context
       state = state.copyWith(
         queue: shuffledSongs,
-        currentIndex: 0,
+        currentIndex: currentIndex,
         currentPlaylistId: null, // Clear playlist context for general shuffle
         shuffleMode: true, // Enable shuffle mode
       );
