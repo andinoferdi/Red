@@ -21,37 +21,37 @@ class DynamicColorNotifier extends StateNotifier<DynamicColorState> {
       return;
     }
     
-    // Start with neutral colors immediately to avoid any random colors
-    const neutralColors = DominantColors(
-      primary: Color(0xFF4A4A4A),
-      secondary: Color(0xFF606060),
-      backgroundStart: Color(0xFF2A2A2A),
-      backgroundEnd: Color(0xFF1A1A1A),
-      textPrimary: Colors.white,
-      textSecondary: Color(0xFFB3B3B3),
-      accent: Color(0xFF707070),
-    );
-    
-    // Set neutral colors immediately
+    // Update song ID immediately but keep existing colors during extraction
+    // This prevents showing gray colors while extracting
     state = state.copyWith(
-      colors: neutralColors,
       currentSongId: song.id,
-      isLoading: false,
+      isLoading: false, // Don't show loading state to avoid gray colors
       hasError: false,
     );
     
-    // Add a small delay to make transition smoother and less jarring
-    await Future.delayed(const Duration(milliseconds: 300));
-    
-    // Now extract actual album colors in background
     try {
       // Check if we have a valid image URL
       if (song.albumArtUrl.isEmpty || !_isValidImageUrl(song.albumArtUrl)) {
-        // No album art, keep neutral colors
+        // No album art, use neutral colors
+        const neutralColors = DominantColors(
+          primary: Color(0xFF4A4A4A),
+          secondary: Color(0xFF606060),
+          backgroundStart: Color(0xFF2A2A2A),
+          backgroundEnd: Color(0xFF1A1A1A),
+          textPrimary: Colors.white,
+          textSecondary: Color(0xFFB3B3B3),
+          accent: Color(0xFF707070),
+        );
+        
+        state = state.copyWith(
+          colors: neutralColors,
+          isLoading: false,
+          hasError: false,
+        );
         return;
       }
       
-      // Extract colors from album art URL
+      // Extract colors from album art URL directly
       final colors = await ColorExtractor.extractColorsFromUrl(song.albumArtUrl);
       
       // Update state with extracted colors only if this is still the current song
@@ -63,8 +63,26 @@ class DynamicColorNotifier extends StateNotifier<DynamicColorState> {
         );
       }
     } catch (e) {
-      // On error, keep the neutral colors we already set
+      // On error, use neutral colors
       debugPrint('Color extraction failed for ${song.title}: $e');
+      
+      const neutralColors = DominantColors(
+        primary: Color(0xFF4A4A4A),
+        secondary: Color(0xFF606060),
+        backgroundStart: Color(0xFF2A2A2A),
+        backgroundEnd: Color(0xFF1A1A1A),
+        textPrimary: Colors.white,
+        textSecondary: Color(0xFFB3B3B3),
+        accent: Color(0xFF707070),
+      );
+      
+      if (state.currentSongId == song.id) {
+        state = state.copyWith(
+          colors: neutralColors,
+          isLoading: false,
+          hasError: true,
+        );
+      }
     }
   }
   
