@@ -75,7 +75,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                           currentSong.title,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'DM Sans',
                           ),
@@ -88,7 +88,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                           currentSong.artist,
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.7),
-                            fontSize: 12,
+                            fontSize: 11,
                             fontFamily: 'DM Sans',
                           ),
                           textAlign: TextAlign.center,
@@ -110,14 +110,39 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
               ),
             ),
             
-            // Lyrics content - takes most of the space
+            // Lyrics content - takes most of the space with fade effect
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: _buildLyricsContent(currentSong),
-                ),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      child: _buildLyricsContent(currentSong),
+                    ),
+                  ),
+                  // Fade effect at bottom
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: 30,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            colors.primary.withValues(alpha: 0.0),
+                            colors.primary.withValues(alpha: 0.6),
+                            colors.primary,
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             
@@ -217,7 +242,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
     final lyricsLines = song.lyrics!.split('\n');
     
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.only(top: 20, bottom: 80), // Extra bottom padding for scrolling
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: lyricsLines.map((line) {
@@ -239,7 +264,7 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
                 color: isSpecialSection 
                     ? Colors.white.withValues(alpha: 0.6)
                     : Colors.white,
-                fontSize: isSpecialSection ? 16 : 24,
+                fontSize: isSpecialSection ? 13 : 18,
                 fontWeight: isSpecialSection ? FontWeight.w500 : FontWeight.w600,
                 height: 1.4,
                 fontFamily: 'DM Sans',
