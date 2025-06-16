@@ -475,5 +475,3 @@ class StatsRoute extends PageRouteInfo<void> {
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
-
-

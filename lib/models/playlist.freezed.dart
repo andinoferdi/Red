@@ -317,5 +317,3 @@ abstract class _Playlist implements Playlist {
   _$$PlaylistImplCopyWith<_$PlaylistImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
-
-

@@ -30,5 +30,3 @@ Map<String, dynamic> _$$PlaylistStateImplToJson(_$PlaylistStateImpl instance) =>
       'isLoading': instance.isLoading,
       'error': instance.error,
     };
-
-

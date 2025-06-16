@@ -7,6 +7,7 @@ import '../../repositories/playlist_repository.dart';
 import '../screens/playlist/playlist_detail_screen.dart';
 import 'playlist_image_widget.dart';
 import '../providers/playlist_provider.dart';
+import '../routes/app_router.dart';
 
 class PlaylistTab extends ConsumerStatefulWidget {
   const PlaylistTab({
@@ -34,8 +35,8 @@ class _PlaylistTabState extends ConsumerState<PlaylistTab> {
   void _navigateToPlaylistDetail(RecordModel playlist) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => PlaylistDetailScreen(
+      AppRouter.createConsistentRoute(
+        PlaylistDetailScreen(
           playlist: playlist,
         ),
       ),

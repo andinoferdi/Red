@@ -18,6 +18,7 @@ import '../../widgets/song_item_widget.dart';
 import '../../utils/image_helpers.dart';
 import '../../providers/playlist_provider.dart';
 import '../../widgets/animated_sound_bars.dart';
+import '../../routes/app_router.dart';
 
 @RoutePage()
 class PlaylistDetailScreen extends ConsumerStatefulWidget {
@@ -200,8 +201,8 @@ class _PlaylistDetailScreenState extends ConsumerState<PlaylistDetailScreen> {
   void _showEditPlaylistDialog() async {
     final result = await Navigator.push<bool>(
       context,
-      MaterialPageRoute(
-        builder: (context) => EditPlaylistScreen(playlist: _currentPlaylist),
+      AppRouter.createConsistentRoute<bool>(
+        EditPlaylistScreen(playlist: _currentPlaylist),
       ),
     );
     
@@ -288,8 +289,8 @@ class _PlaylistDetailScreenState extends ConsumerState<PlaylistDetailScreen> {
   Future<void> _navigateToAddSongs() async {
     final result = await Navigator.push<bool>(
       context,
-      MaterialPageRoute(
-        builder: (context) => AddSongsScreen(playlist: _currentPlaylist),
+      AppRouter.createConsistentRoute<bool>(
+        AddSongsScreen(playlist: _currentPlaylist),
       ),
     );
 

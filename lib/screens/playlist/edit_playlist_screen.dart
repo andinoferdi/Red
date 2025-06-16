@@ -14,6 +14,7 @@ import '../../widgets/song_item_widget.dart';
 import '../../widgets/playlist_image_widget.dart';
 import 'add_songs_screen.dart';
 import '../../providers/playlist_provider.dart';
+import '../../routes/app_router.dart';
 
 @RoutePage()
 class EditPlaylistScreen extends ConsumerStatefulWidget {
@@ -894,8 +895,8 @@ class _EditPlaylistScreenState extends ConsumerState<EditPlaylistScreen> {
             // Navigate to add songs screen
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => AddSongsScreen(playlist: widget.playlist),
+              AppRouter.createConsistentRoute(
+                AddSongsScreen(playlist: widget.playlist),
               ),
             );
           },

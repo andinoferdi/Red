@@ -42,7 +42,7 @@ class AppConstants {
 
   // Animation Durations
   static const Duration splashDuration = Duration(seconds: 2);
-  static const Duration pageTransitionDuration = Duration(milliseconds: 300);
+  static const Duration pageTransitionDuration = Duration(milliseconds: 200);
 
   // Spacing Constants
   static const double defaultPadding = 24.0;

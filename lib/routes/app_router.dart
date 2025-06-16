@@ -28,26 +28,43 @@ part 'app_router.gr.dart';
 )
 class AppRouter extends _$AppRouter {
   AppRouter({super.navigatorKey});
+
+  // Consistent transition builder used across all routes
+  static Widget _buildConsistentTransition(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    final curvedAnimation = CurvedAnimation(
+      parent: animation,
+      curve: Curves.easeOut,
+      reverseCurve: Curves.easeIn,
+    );
+
+    return FadeTransition(
+      opacity: curvedAnimation,
+      child: ScaleTransition(
+        scale: Tween<double>(begin: 0.97, end: 1.0).animate(curvedAnimation),
+        child: child,
+      ),
+    );
+  }
+
+  // Helper method for consistent manual navigation
+  static PageRouteBuilder<T> createConsistentRoute<T>(Widget page) {
+    return PageRouteBuilder<T>(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: _buildConsistentTransition,
+      transitionDuration: const Duration(milliseconds: 200),
+      reverseTransitionDuration: const Duration(milliseconds: 200),
+    );
+  }
   @override
   RouteType get defaultRouteType => RouteType.custom(
-    // Custom fade transition builder
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      // Create a smooth fade transition with a slight scale effect
-      final fadeAnimation = CurvedAnimation(
-        parent: animation,
-        curve: Curves.easeOut,
-        reverseCurve: Curves.easeIn,
-      );
-      
-      return FadeTransition(
-        opacity: fadeAnimation,
-        child: ScaleTransition(
-          scale: Tween<double>(begin: 0.98, end: 1.0).animate(fadeAnimation),
-          child: child,
-        ),
-      );
-    },
-    durationInMilliseconds: 200, // Faster transitions feel more premium
+    // Use consistent transition across all routes
+    transitionsBuilder: _buildConsistentTransition,
+    durationInMilliseconds: 200, // Consistent timing
   );
 
   @override
@@ -63,8 +80,23 @@ class AppRouter extends _$AppRouter {
     AutoRoute(page: SearchRoute.page),
     AutoRoute(page: LibraryRoute.page),
     AutoRoute(page: StatsRoute.page),
-    AutoRoute(page: MusicPlayerRoute.page, fullscreenDialog: true),
-    AutoRoute(page: LyricsRoute.page, fullscreenDialog: true),
+    // Use consistent transition for fullscreen dialogs
+    AutoRoute(
+      page: MusicPlayerRoute.page, 
+      fullscreenDialog: true,
+      type: RouteType.custom(
+        transitionsBuilder: _buildConsistentTransition,
+        durationInMilliseconds: 200,
+      ),
+    ),
+    AutoRoute(
+      page: LyricsRoute.page, 
+      fullscreenDialog: true,
+      type: RouteType.custom(
+        transitionsBuilder: _buildConsistentTransition,
+        durationInMilliseconds: 200,
+      ),
+    ),
     AutoRoute(page: PlaylistDetailRoute.page),
     AutoRoute(page: EditPlaylistRoute.page),
     AutoRoute(page: DurationUpdateRoute.page),

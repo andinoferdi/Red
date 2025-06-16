@@ -22,6 +22,11 @@ class PlayerController extends StateNotifier<PlayerState> {
   String? _currentAudioUrl;
   bool _isDisposed = false;
   
+  // Debouncing for skip operations
+  Timer? _skipDebounceTimer;
+  bool _isSkipping = false;
+  static const Duration _skipDebounceDelay = Duration(milliseconds: 500);
+  
   PlayerController(this.ref) : super(PlayerState.initial()) {
     _initializeAudioPlayer();
   }
@@ -77,6 +82,7 @@ class PlayerController extends StateNotifier<PlayerState> {
   void dispose() {
     _isDisposed = true;
     _positionTimer?.cancel();
+    _skipDebounceTimer?.cancel();
     _audioPlayer.dispose();
     super.dispose();
   }
@@ -275,12 +281,14 @@ class PlayerController extends StateNotifier<PlayerState> {
       
       // Try to handle specific errors
       if (e.toString().contains('AudioPlayer has already been disposed') ||
-          e.toString().contains('Player instance')) {
+          e.toString().contains('Player instance') ||
+          e.toString().contains('Platform player') && e.toString().contains('already exists')) {
         try {
+          debugPrint('Recreating AudioPlayer due to instance conflict...');
           await _recreateAudioPlayer();
           
           // Wait a bit for the new player to initialize
-          await Future.delayed(const Duration(milliseconds: 300));
+          await Future.delayed(const Duration(milliseconds: 500));
           
           // Check if song is still the same before retrying
           if (state.currentSong?.id == song.id) {
@@ -319,6 +327,22 @@ class PlayerController extends StateNotifier<PlayerState> {
       
     } catch (fallbackError) {
       debugPrint('Fallback audio also failed: $fallbackError');
+      
+      // Handle platform player conflicts in fallback too
+      if (fallbackError.toString().contains('Platform player') && 
+          fallbackError.toString().contains('already exists')) {
+        try {
+          debugPrint('Recreating AudioPlayer in fallback...');
+          await _recreateAudioPlayer();
+          await Future.delayed(const Duration(milliseconds: 500));
+          
+          // Don't retry fallback to avoid infinite loop
+          debugPrint('AudioPlayer recreated, but not retrying fallback to avoid loop');
+        } catch (recreateError) {
+          debugPrint('Failed to recreate player in fallback: $recreateError');
+        }
+      }
+      
       // Reset buffering state on complete failure
       if (!_isDisposed) {
         state = state.copyWith(isBuffering: false);
@@ -380,9 +404,15 @@ class PlayerController extends StateNotifier<PlayerState> {
     }
   }
   
-  /// Skip to next song
+  /// Skip to next song with debouncing
   Future<void> skipNext() async {
-    if (_isDisposed) return;
+    if (_isDisposed || _isSkipping) return;
+    
+    // Set skipping flag to prevent multiple calls
+    _isSkipping = true;
+    
+    // Cancel any existing debounce timer
+    _skipDebounceTimer?.cancel();
     
     try {
       final currentIndex = state.currentIndex;
@@ -414,16 +444,28 @@ class PlayerController extends StateNotifier<PlayerState> {
       
       await playSong(nextSong);
     } catch (e) {
+      debugPrint('Error in skipNext: $e');
       // Reset buffering state on error
       if (!_isDisposed) {
         state = state.copyWith(isBuffering: false);
       }
+    } finally {
+      // Reset skipping flag after delay to prevent spam
+      _skipDebounceTimer = Timer(_skipDebounceDelay, () {
+        _isSkipping = false;
+      });
     }
   }
   
-  /// Skip to previous song
+  /// Skip to previous song with debouncing
   Future<void> skipPrevious() async {
-    if (_isDisposed) return;
+    if (_isDisposed || _isSkipping) return;
+    
+    // Set skipping flag to prevent multiple calls
+    _isSkipping = true;
+    
+    // Cancel any existing debounce timer
+    _skipDebounceTimer?.cancel();
     
     try {
       final currentIndex = state.currentIndex;
@@ -455,10 +497,16 @@ class PlayerController extends StateNotifier<PlayerState> {
       
       await playSong(prevSong);
     } catch (e) {
+      debugPrint('Error in skipPrevious: $e');
       // Reset buffering state on error
       if (!_isDisposed) {
         state = state.copyWith(isBuffering: false);
       }
+    } finally {
+      // Reset skipping flag after delay to prevent spam
+      _skipDebounceTimer = Timer(_skipDebounceDelay, () {
+        _isSkipping = false;
+      });
     }
   }
   

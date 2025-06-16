@@ -13,7 +13,7 @@ import '../../widgets/mini_player.dart';
 import '../../widgets/custom_bottom_nav.dart';
 import '../../widgets/song_item_widget.dart';
 import '../../widgets/animated_sound_bars.dart';
-import '../../providers/dynamic_color_provider.dart';
+
 
 @RoutePage()
 class SearchScreen extends ConsumerStatefulWidget {
@@ -132,19 +132,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   void _playSong(Song song, int index) {
     // Add song to recent searched songs when played from search results
     _addToRecentSearchedSongs(song);
-    // Play without playlist context - playQueue sets currentPlaylistId to null
-    ref.read(playerControllerProvider.notifier).playQueue(_searchResults, index);
+    // Use playSongById to load complete song data without playlist context (like home screen)
+    ref.read(playerControllerProvider.notifier).playSongByIdWithoutPlaylist(song.id);
     
-    // Auto-extract colors for mini player
-    ref.read(dynamicColorProvider.notifier).extractColorsFromSong(song);
+    // Color extraction will be handled automatically by mini_player when song changes
   }
 
   void _playSongFromRecent(Song song) {
-    // Just play the song without moving it to top of recent list
+    // Use playSongById to load complete song data without playlist context (like home screen)
     ref.read(playerControllerProvider.notifier).playSongByIdWithoutPlaylist(song.id);
     
-    // Auto-extract colors for mini player
-    ref.read(dynamicColorProvider.notifier).extractColorsFromSong(song);
+    // Color extraction will be handled automatically by mini_player when song changes
   }
 
   @override

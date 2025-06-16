@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'constants.dart';
+import 'custom_page_transitions.dart';
 
 class AppTheme {
   // Private constructor to prevent instantiation
@@ -41,11 +42,14 @@ class AppTheme {
         // Material 3
         useMaterial3: true,
 
-        // Transitions
-        pageTransitionsTheme: const PageTransitionsTheme(
+        // Transitions - Use consistent fade+scale transition across all platforms
+        pageTransitionsTheme: PageTransitionsTheme(
           builders: {
-            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.android: const FadeScalePageTransitionsBuilder(),
+            TargetPlatform.iOS: const FadeScalePageTransitionsBuilder(),
+            TargetPlatform.windows: const FadeScalePageTransitionsBuilder(),
+            TargetPlatform.macOS: const FadeScalePageTransitionsBuilder(),
+            TargetPlatform.linux: const FadeScalePageTransitionsBuilder(),
           },
         ),
       );

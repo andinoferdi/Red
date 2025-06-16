@@ -251,5 +251,3 @@ abstract class _AuthState implements AuthState {
   _$$AuthStateImplCopyWith<_$AuthStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
-
-

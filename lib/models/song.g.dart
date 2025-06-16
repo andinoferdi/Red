@@ -32,5 +32,3 @@ Map<String, dynamic> _$$SongImplToJson(_$SongImpl instance) =>
       'audioFileUrl': instance.audioFileUrl,
       'audioFileName': instance.audioFileName,
     };
-
-

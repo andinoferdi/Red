@@ -14,7 +14,7 @@ import '../../providers/genre_provider.dart';
 import '../../widgets/user_avatar.dart';
 import '../../widgets/mini_player.dart';
 import '../../widgets/song_item_widget.dart';
-import '../../providers/dynamic_color_provider.dart';
+
 
 
 import '../../utils/app_colors.dart';
@@ -549,8 +549,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> with AutomaticKeepAlive
                 onTap: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const AlbumSyncDebugScreen(),
+                    AppRouter.createConsistentRoute(
+                      const AlbumSyncDebugScreen(),
                     ),
                   );
                 },
