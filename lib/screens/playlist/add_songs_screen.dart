@@ -31,11 +31,10 @@ class _AddSongsScreenState extends ConsumerState<AddSongsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadSongs();
     
-    // Load songs using new provider
+    // Load songs using provider after widget is built
     Future.microtask(() {
-      ref.read(songProvider.notifier).loadSongs();
+      _loadSongs();
     });
   }
 
@@ -46,23 +45,26 @@ class _AddSongsScreenState extends ConsumerState<AddSongsScreen> {
   }
 
   Future<void> _loadSongs() async {
+    if (!mounted) return;
+    
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
 
     try {
-      // Use new song provider for songs
+      // Load songs using provider
       final songState = ref.read(songProvider);
       List<Song> songs;
       
-      if (songState.songs.isNotEmpty) {
+      if (songState.songs.isNotEmpty && !songState.isLoading) {
         // Use cached songs from provider
         songs = songState.songs;
       } else {
         // Load songs if not available
         await ref.read(songProvider.notifier).loadSongs();
-        songs = ref.read(songProvider).songs;
+        final updatedState = ref.read(songProvider);
+        songs = updatedState.songs;
       }
       
       // Load existing playlist songs
@@ -71,18 +73,22 @@ class _AddSongsScreenState extends ConsumerState<AddSongsScreen> {
       final songPlaylistRepository = SongPlaylistRepository(pbService);
       final playlistSongs = await songPlaylistRepository.getPlaylistSongs(widget.playlist.id);
       
-      setState(() {
-        _allSongs = songs;
-        _filteredSongs = songs;
-        _existingSongIds.clear();
-        _existingSongIds.addAll(playlistSongs.map((song) => song.id));
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _allSongs = songs;
+          _filteredSongs = songs;
+          _existingSongIds.clear();
+          _existingSongIds.addAll(playlistSongs.map((song) => song.id));
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _errorMessage = 'Gagal memuat lagu: $e';
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Gagal memuat lagu: $e';
+          _isLoading = false;
+        });
+      }
     }
   }
 

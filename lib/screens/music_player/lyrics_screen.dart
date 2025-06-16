@@ -30,6 +30,13 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
     super.dispose();
   }
 
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return '$minutes:$seconds';
+  }
+
   @override
   Widget build(BuildContext context) {
     final playerState = ref.watch(playerControllerProvider);
@@ -45,362 +52,233 @@ class _LyricsScreenState extends ConsumerState<LyricsScreen> {
     });
     
     return Scaffold(
-      backgroundColor: colors.backgroundStart,
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          // Custom App Bar with solid color
-          SliverAppBar(
-            expandedHeight: 200,
-            floating: false,
-            pinned: true,
-            backgroundColor: Colors.transparent,
-            leading: IconButton(
-              icon: Icon(Icons.keyboard_arrow_down, color: colors.textPrimary, size: 28),
-              onPressed: () => context.router.maybePop(),
-            ),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.share, color: colors.textPrimary),
-                onPressed: () {
-                  // TODO: Implement share lyrics functionality
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Share lyrics feature coming soon!'),
-                      backgroundColor: colors.accent,
-                    ),
-                  );
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.more_vert, color: colors.textPrimary),
-                onPressed: () {
-                  // TODO: Implement more options
-                },
-              ),
-            ],
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                color: colors.primary.withValues(alpha: 0.8),
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+      backgroundColor: colors.primary, // Static background color from palette
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Top bar with navigation and song info in one row
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Row(
+                children: [
+                  // Back button
+                  IconButton(
+                    icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 28),
+                    onPressed: () => context.router.maybePop(),
+                  ),
+                  
+                  // Song title and artist in the center
+                  Expanded(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            // Small album art
-                            Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.3),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: ImageHelpers.buildSafeNetworkImage(
-                                  imageUrl: currentSong.albumArtUrl,
-                                  width: 60,
-                                  height: 60,
-                                  fit: BoxFit.cover,
-                                  fallbackWidget: Container(
-                                    color: AppColors.greyDark,
-                                    child: Icon(
-                                      Icons.music_note,
-                                      color: colors.accent,
-                                      size: 30,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            // Song info
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    currentSong.title,
-                                    style: TextStyle(
-                                      color: colors.textPrimary,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'DM Sans',
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    currentSong.artist,
-                                    style: TextStyle(
-                                      color: colors.textSecondary,
-                                      fontSize: 14,
-                                      fontFamily: 'DM Sans',
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                        Text(
+                          currentSong.title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'DM Sans',
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          currentSong.artist,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            fontSize: 12,
+                            fontFamily: 'DM Sans',
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
                   ),
+                  
+                  // More options button
+                  IconButton(
+                    icon: const Icon(Icons.more_vert, color: Colors.white),
+                    onPressed: () {
+                      // TODO: Implement more options
+                    },
+                  ),
+                ],
+              ),
+            ),
+            
+            // Lyrics content - takes most of the space
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: _buildLyricsContent(currentSong),
                 ),
               ),
             ),
-          ),
-          
-          // Lyrics content
-          SliverToBoxAdapter(
-            child: Padding(
+            
+            // Bottom controls
+            Padding(
               padding: const EdgeInsets.all(20),
-              child: _buildLyricsContent(currentSong),
+              child: Column(
+                children: [
+                  // Progress bar
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: Colors.white,
+                      inactiveTrackColor: Colors.white.withValues(alpha: 0.3),
+                      thumbColor: Colors.white,
+                      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+                      overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
+                      trackHeight: 3,
+                    ),
+                    child: Slider(
+                      value: playerState.currentPosition.inSeconds.toDouble(),
+                      max: (currentSong.duration.inSeconds > 0 
+                          ? currentSong.duration.inSeconds 
+                          : 1).toDouble(),
+                      onChanged: (value) {
+                        ref.read(playerControllerProvider.notifier)
+                            .seekTo(Duration(seconds: value.toInt()));
+                      },
+                    ),
+                  ),
+                  
+                  // Time labels
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _formatDuration(playerState.currentPosition),
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            fontSize: 12,
+                            fontFamily: 'DM Sans',
+                          ),
+                        ),
+                        Text(
+                          _formatDuration(currentSong.duration),
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            fontSize: 12,
+                            fontFamily: 'DM Sans',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 30),
+                  
+                  // Play/Pause button
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        playerState.isPlaying ? Icons.pause : Icons.play_arrow,
+                        color: colors.primary,
+                        size: 32,
+                      ),
+                      onPressed: () {
+                        if (playerState.isPlaying) {
+                          ref.read(playerControllerProvider.notifier).pause();
+                        } else {
+                          ref.read(playerControllerProvider.notifier).resume();
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
   
   Widget _buildLyricsContent(Song song) {
-    final dynamicColorState = ref.watch(dynamicColorProvider);
-    final colors = dynamicColorState.colors ?? ColorExtractor.getDefaultColors();
-    
     if (song.lyrics == null || song.lyrics!.trim().isEmpty) {
-      return _buildNoLyricsState(song);
+      return _buildNoLyricsState();
     }
     
     // Split lyrics into lines for better formatting
     final lyricsLines = song.lyrics!.split('\n');
     
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Lyrics header
-        Row(
-          children: [
-            Icon(
-              Icons.lyrics,
-              color: colors.accent,
-              size: 24,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'Lyrics',
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: lyricsLines.map((line) {
+          final trimmedLine = line.trim();
+          
+          // Empty line for spacing
+          if (trimmedLine.isEmpty) {
+            return const SizedBox(height: 20);
+          }
+          
+          // Check if it's a chorus or special section (contains brackets)
+          final isSpecialSection = trimmedLine.contains('[') && trimmedLine.contains(']');
+          
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Text(
+              trimmedLine,
               style: TextStyle(
-                color: colors.accent,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+                color: isSpecialSection 
+                    ? Colors.white.withValues(alpha: 0.6)
+                    : Colors.white,
+                fontSize: isSpecialSection ? 16 : 24,
+                fontWeight: isSpecialSection ? FontWeight.w500 : FontWeight.w600,
+                height: 1.4,
                 fontFamily: 'DM Sans',
               ),
+              textAlign: TextAlign.left,
             ),
-            const Spacer(),
-            // Font size controls
-            IconButton(
-              icon: Icon(Icons.text_decrease, color: colors.textSecondary),
-              onPressed: () {
-                // TODO: Implement font size decrease
-              },
+          );
+        }).toList(),
+      ),
+    );
+  }
+  
+  Widget _buildNoLyricsState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 60),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.lyrics_outlined,
+              size: 80,
+              color: Colors.white.withValues(alpha: 0.3),
             ),
-            IconButton(
-              icon: Icon(Icons.text_increase, color: colors.textSecondary),
-              onPressed: () {
-                // TODO: Implement font size increase
-              },
-            ),
-          ],
-        ),
-        
-        const SizedBox(height: 20),
-        
-        // Lyrics text with solid background
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: colors.primary,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: colors.primary.withValues(alpha: 0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: lyricsLines.map((line) {
-              final trimmedLine = line.trim();
-              
-              // Empty line for spacing
-              if (trimmedLine.isEmpty) {
-                return const SizedBox(height: 12);
-              }
-              
-              // Check if it's a chorus or special section (contains brackets)
-              final isSpecialSection = trimmedLine.contains('[') && trimmedLine.contains(']');
-              
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  trimmedLine,
-                  style: TextStyle(
-                    color: isSpecialSection ? Colors.white : Colors.white,
-                    fontSize: isSpecialSection ? 18 : 20,
-                    fontWeight: FontWeight.bold,
-                    height: 1.6,
-                    fontFamily: 'DM Sans',
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withValues(alpha: 0.3),
-                        offset: const Offset(1, 1),
-                        blurRadius: 2,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-        
-        const SizedBox(height: 30),
-        
-        // Song info footer
-        Center(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: AppColors.greyDark.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              '♪ ${song.title} - ${song.artist} ♪',
-              style: const TextStyle(
-                color: AppColors.greyLight,
-                fontSize: 12,
-                fontStyle: FontStyle.italic,
+            
+            const SizedBox(height: 24),
+            
+            Text(
+              'No lyrics available',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.7),
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
                 fontFamily: 'DM Sans',
               ),
               textAlign: TextAlign.center,
             ),
-          ),
+          ],
         ),
-        
-        const SizedBox(height: 40),
-      ],
-    );
-  }
-  
-  Widget _buildNoLyricsState(Song song) {
-    final dynamicColorState = ref.watch(dynamicColorProvider);
-    final colors = dynamicColorState.colors ?? ColorExtractor.getDefaultColors();
-    
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 60),
-          
-          // Large music note icon
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: colors.backgroundEnd.withValues(alpha: 0.3),
-            ),
-            child: Icon(
-              Icons.lyrics_outlined,
-              size: 60,
-              color: colors.textSecondary,
-            ),
-          ),
-          
-          const SizedBox(height: 24),
-          
-          Text(
-            'No lyrics available',
-            style: TextStyle(
-              color: colors.textPrimary,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'DM Sans',
-            ),
-          ),
-          
-          const SizedBox(height: 12),
-          
-          Text(
-            'Lyrics for "${song.title}" are not available yet.',
-            style: TextStyle(
-              color: colors.textSecondary,
-              fontSize: 16,
-              fontFamily: 'DM Sans',
-            ),
-            textAlign: TextAlign.center,
-          ),
-          
-          const SizedBox(height: 8),
-          
-          Text(
-            'Check back later or try another song.',
-            style: TextStyle(
-              color: colors.textSecondary,
-              fontSize: 14,
-              fontFamily: 'DM Sans',
-            ),
-            textAlign: TextAlign.center,
-          ),
-          
-          const SizedBox(height: 40),
-          
-          // Suggest action button
-          ElevatedButton.icon(
-            onPressed: () {
-              // TODO: Implement suggest lyrics or report missing lyrics
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Suggest lyrics feature coming soon!'),
-                  backgroundColor: colors.accent,
-                ),
-              );
-            },
-            icon: const Icon(Icons.add, color: Colors.white),
-            label: const Text(
-              'Suggest Lyrics',
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'DM Sans',
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: colors.accent,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-            ),
-          ),
-          
-          const SizedBox(height: 60),
-        ],
       ),
     );
   }
